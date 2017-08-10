@@ -1,4 +1,5 @@
 package org.jenkinsci.plugins.myintro;
+
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.FilePath;
@@ -16,31 +17,41 @@ import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
+import org.kohsuke.stapler.DataBoundSetter;
 
 /**
  * Sample {@link Builder}.
  *
  * <p>
  * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked
- * and a new {@link HelloWorldBuilder} is created. The created
- * instance is persisted to the project configuration XML by using
- * XStream, so this allows you to use instance fields (like {@link #name})
- * to remember the configuration.
+ * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked and a new
+ * {@link HelloWorldBuilder} is created. The created instance is persisted to
+ * the project configuration XML by using XStream, so this allows you to use
+ * instance fields (like {@link #name}) to remember the configuration.
  *
  * <p>
- * When a build is performed, the {@link #perform} method will be invoked. 
+ * When a build is performed, the {@link #perform} method will be invoked.
  *
  * @author Kohsuke Kawaguchi
  */
 public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     private final String name;
+    private long sleepTime;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public HelloWorldBuilder(String name) {
         this.name = name;
+    }
+
+    @DataBoundSetter
+    public void setSleepTime(long sleepTime) {
+        this.sleepTime = sleepTime;
+    }
+
+    public long getSleepTime() {
+        return sleepTime;
     }
 
     /**
@@ -51,15 +62,20 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     }
 
     @Override
-    public void perform(Run<?,?> build, FilePath workspace, Launcher launcher, TaskListener listener) {
+    public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException {
         // This is where you 'build' the project.
         // Since this is a dummy, we just say 'hello world' and call that a build.
 
         // This also shows how you can consult the global configuration of the builder
-        if (getDescriptor().getUseFrench())
-            listener.getLogger().println("Bonjour, "+name+"!");
-        else
-            listener.getLogger().println("Hello, "+name+"!");
+        if (getDescriptor().getUseFrench()) {
+            listener.getLogger().println("Bonjour, " + name + "!");
+        } else {
+            listener.getLogger().println("Hello, " + name + "!");
+        }
+        if (sleepTime > 0) {
+            listener.getLogger().println("Sleeping for " + sleepTime / 1000.0 + " seconds");
+            Thread.sleep(sleepTime);
+        }
     }
 
     // Overridden for better type safety.
@@ -67,22 +83,24 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     // you don't have to do this.
     @Override
     public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl)super.getDescriptor();
+        return (DescriptorImpl) super.getDescriptor();
     }
 
     /**
-     * Descriptor for {@link HelloWorldBuilder}. Used as a singleton.
-     * The class is marked as public so that it can be accessed from views.
+     * Descriptor for {@link HelloWorldBuilder}. Used as a singleton. The class
+     * is marked as public so that it can be accessed from views.
      *
      * <p>
-     * See {@code src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly}
+     * See
+     * {@code src/main/resources/hudson/plugins/hello_world/HelloWorldBuilder/*.jelly}
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+
         /**
-         * To persist global configuration information,
-         * simply store it in a field and call save().
+         * To persist global configuration information, simply store it in a
+         * field and call save().
          *
          * <p>
          * If you don't want fields to be persisted, use {@code transient}.
@@ -90,8 +108,8 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         private boolean useFrench;
 
         /**
-         * In order to load the persisted global configuration, you have to 
-         * call load() in the constructor.
+         * In order to load the persisted global configuration, you have to call
+         * load() in the constructor.
          */
         public DescriptorImpl() {
             load();
@@ -100,21 +118,23 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         /**
          * Performs on-the-fly validation of the form field 'name'.
          *
-         * @param value
-         *      This parameter receives the value that the user has typed.
-         * @return
-         *      Indicates the outcome of the validation. This is sent to the browser.
-         *      <p>
-         *      Note that returning {@link FormValidation#error(String)} does not
-         *      prevent the form from being saved. It just means that a message
-         *      will be displayed to the user. 
+         * @param value This parameter receives the value that the user has
+         * typed.
+         * @return Indicates the outcome of the validation. This is sent to the
+         * browser.
+         * <p>
+         * Note that returning {@link FormValidation#error(String)} does not
+         * prevent the form from being saved. It just means that a message will
+         * be displayed to the user.
          */
         public FormValidation doCheckName(@QueryParameter String value)
                 throws IOException, ServletException {
-            if (value.length() == 0)
+            if (value.length() == 0) {
                 return FormValidation.error("Please set a name");
-            if (value.length() < 4)
+            }
+            if (value.length() < 4) {
                 return FormValidation.warning("Isn't the name too short?");
+            }
             return FormValidation.ok();
         }
 
@@ -138,18 +158,19 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
             // ^Can also use req.bindJSON(this, formData);
             //  (easier when there are many fields; need set* methods for this, like setUseFrench)
             save();
-            return super.configure(req,formData);
+            return super.configure(req, formData);
         }
 
         /**
-         * This method returns true if the global configuration says we should speak French.
+         * This method returns true if the global configuration says we should
+         * speak French.
          *
-         * The method name is bit awkward because global.jelly calls this method to determine
-         * the initial state of the checkbox by the naming convention.
+         * The method name is bit awkward because global.jelly calls this method
+         * to determine the initial state of the checkbox by the naming
+         * convention.
          */
         public boolean getUseFrench() {
             return useFrench;
         }
     }
 }
-
