@@ -33,16 +33,28 @@ import hudson.model.RootAction;
 @Extension
 public class IntroRootAction implements RootAction {
 
+    /**
+     * Return icon file name.
+     * @return icon file name
+     */
     @Override
     public String getIconFileName() {
         return "clipboard.png";
     }
 
+    /**
+     * Name to display in the root menu.
+     * @return
+     */
     @Override
     public String getDisplayName() {
         return "Intro Root Action";
     }
 
+    /**
+     * URL to open when the root action is clicked.
+     * @return URL to open
+     */
     @Override
     public String getUrlName() {
         return "https://jenkins.io/";

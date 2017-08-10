@@ -40,27 +40,49 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     private long sleepTime;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
+
+    /**
+     * Builder that will echo "Hello " + name to the console log.
+     * @param name name to be displayed in the build log
+     */
     @DataBoundConstructor
     public HelloWorldBuilder(String name) {
         this.name = name;
     }
 
+    /**
+     * Number of milliseconds to sleep.
+     * @param sleepTime milliseconds to sleep
+     */
     @DataBoundSetter
     public void setSleepTime(long sleepTime) {
         this.sleepTime = sleepTime;
     }
 
+    /**
+     * Milliseconds to sleep.
+     * @return milliseconds to sleep
+     */
     public long getSleepTime() {
         return sleepTime;
     }
 
     /**
      * We'll use this from the {@code config.jelly}.
+     * @return name to be displayed
      */
     public String getName() {
         return name;
     }
 
+    /**
+     * Perform the actions for this build step.
+     * @param build project context in which these actions are performed
+     * @param workspace directory where the actions are performed
+     * @param launcher launcher used to execute actions on agent
+     * @param listener listener recording results
+     * @throws InterruptedException on error
+     */
     @Override
     public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException {
         // This is where you 'build' the project.
@@ -81,6 +103,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
     // you don't have to do this.
+
+    /**
+     * Returns the descriptor.
+     * @return descriptor for this build action
+     */
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
@@ -126,6 +153,8 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
          * Note that returning {@link FormValidation#error(String)} does not
          * prevent the form from being saved. It just means that a message will
          * be displayed to the user.
+         * @throws java.io.IOException
+         * @throws javax.servlet.ServletException
          */
         public FormValidation doCheckName(@QueryParameter String value)
                 throws IOException, ServletException {
@@ -138,6 +167,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        /**
+         *
+         * @param value
+         * @return
+         */
         public FormValidation doCheckSleepTime(@QueryParameter String value) {
             long sleepTime;
             try {
@@ -157,6 +191,11 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        /**
+         *
+         * @param aClass
+         * @return
+         */
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
@@ -164,11 +203,19 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
         /**
          * This human readable name is used in the configuration screen.
+         * @return 
          */
         public String getDisplayName() {
             return "Say hello world";
         }
 
+        /**
+         *
+         * @param req
+         * @param formData
+         * @return
+         * @throws FormException
+         */
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // To persist global configuration information,
@@ -187,6 +234,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
          * The method name is bit awkward because global.jelly calls this method
          * to determine the initial state of the checkbox by the naming
          * convention.
+         * @return 
          */
         public boolean getUseFrench() {
             return useFrench;
