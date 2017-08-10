@@ -20,12 +20,12 @@ import java.io.IOException;
 import org.kohsuke.stapler.DataBoundSetter;
 
 /**
- * Sample {@link Builder}.
+ * Sample {@link hudson.tasks.Builder}.
  *
  * <p>
  * When the user configures the project and enables this builder,
- * {@link DescriptorImpl#newInstance(StaplerRequest)} is invoked and a new
- * {@link HelloWorldBuilder} is created. The created instance is persisted to
+ * {@link org.jenkinsci.plugins.myintro.HelloWorldBuilder.DescriptorImpl#newInstance(StaplerRequest)} is invoked and a new
+ * {@link org.jenkinsci.plugins.myintro.HelloWorldBuilder} is created. The created instance is persisted to
  * the project configuration XML by using XStream, so this allows you to use
  * instance fields (like {@link #name}) to remember the configuration.
  *
@@ -33,6 +33,7 @@ import org.kohsuke.stapler.DataBoundSetter;
  * When a build is performed, the {@link #perform} method will be invoked.
  *
  * @author Kohsuke Kawaguchi
+ * @version $Id: $Id
  */
 public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
@@ -43,6 +44,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     /**
      * Builder that will echo "Hello " + name to the console log.
+     *
      * @param name name to be displayed in the build log
      */
     @DataBoundConstructor
@@ -52,6 +54,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     /**
      * Number of milliseconds to sleep.
+     *
      * @param sleepTime milliseconds to sleep
      */
     @DataBoundSetter
@@ -61,6 +64,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     /**
      * Milliseconds to sleep.
+     *
      * @return milliseconds to sleep
      */
     public long getSleepTime() {
@@ -69,6 +73,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     /**
      * We'll use this from the {@code config.jelly}.
+     *
      * @return name to be displayed
      */
     public String getName() {
@@ -76,12 +81,9 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Perform the actions for this build step.
-     * @param build project context in which these actions are performed
-     * @param workspace directory where the actions are performed
-     * @param launcher launcher used to execute actions on agent
-     * @param listener listener recording results
-     * @throws InterruptedException on error
      */
     @Override
     public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException {
@@ -105,8 +107,9 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
     // you don't have to do this.
 
     /**
+     * {@inheritDoc}
+     *
      * Returns the descriptor.
-     * @return descriptor for this build action
      */
     @Override
     public DescriptorImpl getDescriptor() {

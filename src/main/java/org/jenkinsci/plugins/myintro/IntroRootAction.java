@@ -27,15 +27,18 @@ import hudson.Extension;
 import hudson.model.RootAction;
 
 /**
+ * <p>IntroRootAction class.</p>
  *
  * @author MarkE
+ * @version $Id: $Id
  */
 @Extension
 public class IntroRootAction implements RootAction {
 
     /**
+     * {@inheritDoc}
+     *
      * Return icon file name.
-     * @return icon file name
      */
     @Override
     public String getIconFileName() {
@@ -43,8 +46,9 @@ public class IntroRootAction implements RootAction {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * Name to display in the root menu.
-     * @return
      */
     @Override
     public String getDisplayName() {
@@ -52,8 +56,9 @@ public class IntroRootAction implements RootAction {
     }
 
     /**
+     * {@inheritDoc}
+     *
      * URL to open when the root action is clicked.
-     * @return URL to open
      */
     @Override
     public String getUrlName() {
