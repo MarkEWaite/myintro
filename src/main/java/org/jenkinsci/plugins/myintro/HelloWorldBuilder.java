@@ -138,6 +138,25 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
+        public FormValidation doCheckSleepTime(@QueryParameter String value) {
+            long sleepTime;
+            try {
+                sleepTime = Long.valueOf(value);
+            } catch (NumberFormatException nfe) {
+                return FormValidation.error("Sleep time must be a number");
+            }
+            if (sleepTime < 0) {
+                return FormValidation.error("Sleep time must be a positive integer");
+            }
+            if (sleepTime > 10 * 60 * 1000) {
+                return FormValidation.error("Sleep time must be less than 10 minutes");
+            }
+            if (sleepTime > 1 * 60 * 1000) {
+                return FormValidation.warning("Sleep time should be less than 1 minute");
+            }
+            return FormValidation.ok();
+        }
+
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
