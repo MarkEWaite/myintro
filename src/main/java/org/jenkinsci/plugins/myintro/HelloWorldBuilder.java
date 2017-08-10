@@ -33,7 +33,6 @@ import org.kohsuke.stapler.DataBoundSetter;
  * When a build is performed, the {@link #perform} method will be invoked.
  *
  * @author Kohsuke Kawaguchi
- * @version $Id: $Id
  */
 public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
@@ -82,8 +81,6 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
     /**
      * {@inheritDoc}
-     *
-     * Perform the actions for this build step.
      */
     @Override
     public void perform(Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener) throws InterruptedException {
@@ -156,8 +153,8 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
          * Note that returning {@link FormValidation#error(String)} does not
          * prevent the form from being saved. It just means that a message will
          * be displayed to the user.
-         * @throws java.io.IOException
-         * @throws javax.servlet.ServletException
+         * @throws java.io.IOException on IO error
+         * @throws javax.servlet.ServletException on servlet error
          */
         public FormValidation doCheckName(@QueryParameter String value)
                 throws IOException, ServletException {
@@ -171,9 +168,9 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         }
 
         /**
-         *
-         * @param value
-         * @return
+         * Check validity of form data.
+         * @param value string representation of sleep time
+         * @return form validation OK, Error, or Warning
          */
         public FormValidation doCheckSleepTime(@QueryParameter String value) {
             long sleepTime;
@@ -195,9 +192,9 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         }
 
         /**
-         *
-         * @param aClass
-         * @return
+         * Return true if this descriptor applies to aClass.
+         * @param aClass project where this builder is being considered
+         * @return true if this descriptor applies to aClass
          */
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
@@ -206,7 +203,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
         /**
          * This human readable name is used in the configuration screen.
-         * @return 
+         * @return string to be displayed to user in configuration screen
          */
         public String getDisplayName() {
             return "Say hello world";
@@ -214,10 +211,10 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
 
         /**
          *
-         * @param req
-         * @param formData
-         * @return
-         * @throws FormException
+         * @param req Stapler request performing the configuration
+         * @param formData input data from the form
+         * @return true if configuration successful
+         * @throws FormException on form error
          */
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
@@ -237,7 +234,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
          * The method name is bit awkward because global.jelly calls this method
          * to determine the initial state of the checkbox by the naming
          * convention.
-         * @return 
+         * @return true if output should be in French
          */
         public boolean getUseFrench() {
             return useFrench;
