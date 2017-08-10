@@ -25,42 +25,53 @@ package org.jenkinsci.plugins.myintro;
 
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.Descriptor;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.tasks.BuildStepDescriptor;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.jvnet.hudson.test.JenkinsRule;
+import org.jvnet.hudson.test.WithoutJenkins;
 
 /**
  *
  * @author MarkE
  */
 public class HelloWorldBuilderTest {
-    
+
+    @Rule
+    public JenkinsRule jenkins = new JenkinsRule();
+
     public HelloWorldBuilderTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     @Test
+    @WithoutJenkins
     public void testSetSleepTime() {
         final String name = "a name";
         HelloWorldBuilder builder = new HelloWorldBuilder(name);
@@ -70,6 +81,7 @@ public class HelloWorldBuilderTest {
     }
 
     @Test
+    @WithoutJenkins
     public void testGetSleepTime() {
         final String name = "a name";
         HelloWorldBuilder builder = new HelloWorldBuilder(name);
@@ -78,14 +90,13 @@ public class HelloWorldBuilderTest {
         assertThat(builder.getSleepTime(), is(sleepTime));
     }
 
-    // @Test
+    @Test
+    @WithoutJenkins
     public void testGetName() {
+        final String name = "a name";
+        HelloWorldBuilder builder = new HelloWorldBuilder(name);
         System.out.println("getName");
-        HelloWorldBuilder instance = null;
-        String expResult = "";
-        String result = instance.getName();
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        assertThat(builder.getName(), is(name));
     }
 
     // @Test
@@ -100,14 +111,11 @@ public class HelloWorldBuilderTest {
         fail("The test case is a prototype.");
     }
 
-    // @Test
+    @Test
     public void testGetDescriptor() {
-        System.out.println("getDescriptor");
-        HelloWorldBuilder instance = null;
-        HelloWorldBuilder.DescriptorImpl expResult = null;
-        HelloWorldBuilder.DescriptorImpl result = instance.getDescriptor();
-        assertEquals(expResult, result);
-        fail("The test case is a prototype.");
+        HelloWorldBuilder builder = new HelloWorldBuilder("abs");
+        Descriptor builderDescriptor = builder.getDescriptor();
+        assertThat(builder.getDescriptor(), notNullValue());
+        assertThat(builder.getDescriptor(), IsInstanceOf.instanceOf(BuildStepDescriptor.class));
     }
-    
 }
