@@ -175,7 +175,7 @@ public class HelloWorldBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckSleepTime(@QueryParameter String value) {
             long sleepTime;
             try {
-                sleepTime = Long.valueOf(value);
+                sleepTime = Long.parseLong(value);
             } catch (NumberFormatException nfe) {
                 return FormValidation.error("Sleep time must be a number");
             }
